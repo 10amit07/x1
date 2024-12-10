@@ -17,6 +17,18 @@ from reportlab.lib.styles import getSampleStyleSheet
 # Initialize Streamlit page configuration
 st.set_page_config(page_title="Fresh Produce Analyzer", layout="wide")
 
+
+hide_streamlit_style = """
+    <style>
+        #MainMenu {visibility: hidden;}
+        footer {display: none !important;}
+        header {visibility: hidden;}
+        .viewerBadge_container__1QSob {display: none !important;}
+        .css-1lsmgbg.egzxvld1 {display: none !important;}
+    </style>
+"""
+st.markdown(hide_streamlit_style, unsafe_allow_html=True)
+
 # Initialize session states
 if 'produce_data' not in st.session_state:
     st.session_state.produce_data = []
@@ -45,7 +57,7 @@ def create_prompt_template():
    Identify the specific fruit or vegetable shown.
 
 2. Freshness Assessment (1-10 scale):
-   Evaluate visual indicators including color, texture, blemishes.
+   Evaluate visual indicators including color, texture, blemishes. Vegetables tend to stay fresh for longer periods of time, so a higher score is expected.
 
 3. Expected Shelf Life:
    Predict remaining days of freshness.
@@ -88,11 +100,11 @@ def analyze_image(image):
             }
         )
         
-        detection_time = (time.time() - start_time) * 1000
-        if detection_time > 1000:
-            st.warning(f"Detection time exceeded threshold: {detection_time:.2f}ms")
-        else:
-            st.success(f"Detection time: {detection_time:.2f}ms")
+        # detection_time = (time.time() - start_time) * 1000
+        # if detection_time > 1000:
+        #     st.warning(f"Detection time exceeded threshold: {detection_time:.2f}ms")
+        # else:
+        #     st.success(f"Detection time: {detection_time:.2f}ms")
         
         analysis = parse_analysis_response(response.text)
         current_time = datetime.now().astimezone().isoformat()
@@ -101,7 +113,7 @@ def analyze_image(image):
         return analysis
         
     except Exception as e:
-        st.error(f"Error analyzing image: {str(e)}")
+        st.error("Error analyzing image")
         return None
 
 def parse_analysis_response(response_text):
@@ -238,12 +250,12 @@ def main():
                         st.subheader("Analysis Results:")
                         col1, col2 = st.columns(2)
                         with col1:
-                            st.write(f"**Produce:** {analysis['Produce']}")
-                            st.write(f"**Freshness Score:** {analysis['Freshness']}/10")
+                            st.write(f"*Produce:* {analysis['Produce']}")
+                            st.write(f"*Freshness Score:* {analysis['Freshness']}/10")
                         with col2:
-                            st.write(f"**Expected Shelf Life:** {analysis['Expected Lifespan (Days)']} days")
+                            st.write(f"*Expected Shelf Life:* {analysis['Expected Lifespan (Days)']} days")
                             if analysis['Visual Indicators']:
-                                st.write("**Visual Indicators:**")
+                                st.write("*Visual Indicators:*")
                                 for indicator in analysis['Visual Indicators']:
                                     st.write(f"- {indicator}")
     
@@ -269,5 +281,5 @@ def main():
     else:
         st.info("No produce analyzed yet.")
 
-if __name__ == "__main__":
+if _name_ == "_main_":
     main()
