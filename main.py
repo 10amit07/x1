@@ -42,7 +42,7 @@ try:
     # Initialize Vertex AI
     vertexai.init(project=project_id, location="us-central1", credentials=credentials)
     
-    # Initialize the Gemini model
+    # Initialize the model
     model = GenerativeModel(st.secrets["GCP_MODEL_CRED"])
     st.success("Model loaded successfully")
 
